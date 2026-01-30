@@ -1,0 +1,383 @@
+{
+  "rules": [
+    {
+      "id": "SSH_FAILED_PASSWORD",
+      "log_type": "auth",
+      "match": "Failed password",
+      "severity": "high",
+      "description": "SSH başarısız parola denemesi",
+      "action": "alert",
+      "threshold": 5,
+      "time_window": "5m"
+    },
+    {
+      "id": "SSH_INVALID_USER",
+      "log_type": "auth",
+      "match": "Invalid user",
+      "severity": "critical",
+      "description": "Geçersiz kullanıcı adı ile SSH denemesi",
+      "action": "block",
+      "threshold": 3,
+      "time_window": "2m"
+    },
+    {
+      "id": "SSH_ROOT_LOGIN_ATTEMPT",
+      "log_type": "auth",
+      "match": "Failed password for root",
+      "severity": "critical",
+      "description": "Root kullanıcısı için SSH giriş denemesi",
+      "action": "block",
+      "threshold": 1,
+      "time_window": "10m"
+    },
+    {
+      "id": "SSH_BRUTE_FORCE_PATTERN",
+      "log_type": "auth",
+      "match": "POSSIBLE BREAK-IN ATTEMPT",
+      "severity": "critical",
+      "description": "Olası brute-force saldırı tespiti",
+      "action": "block_and_alert",
+      "threshold": 1,
+      "time_window": "1m"
+    },
+    {
+      "id": "SSH_FAIL2BAN_BLOCK",
+      "log_type": "auth",
+      "match": "Banned by fail2ban",
+      "severity": "medium",
+      "description": "Fail2ban tarafından engellenen IP",
+      "action": "log_only"
+    },
+    {
+      "id": "SSH_PUBLICKEY_FAILED",
+      "log_type": "auth",
+      "match": "Failed publickey",
+      "severity": "high",
+      "description": "Başarısız public key authentication",
+      "action": "alert",
+      "threshold": 3,
+      "time_window": "5m"
+    },
+    {
+      "id": "SSH_SUCCESSFUL_LOGIN",
+      "log_type": "auth",
+      "match": "Accepted password|Accepted publickey",
+      "severity": "info",
+      "description": "Başarılı SSH girişi",
+      "action": "log_only"
+    },
+    {
+      "id": "SSH_SESSION_OPENED",
+      "log_type": "auth",
+      "match": "session opened for user",
+      "severity": "low",
+      "description": "SSH oturumu açıldı",
+      "action": "log_only"
+    },
+    {
+      "id": "SSH_SESSION_CLOSED",
+      "log_type": "auth",
+      "match": "session closed for user",
+      "severity": "low",
+      "description": "SSH oturumu kapandı",
+      "action": "log_only"
+    },
+    {
+      "id": "ADMIN_LOGIN_ATTEMPT",
+      "log_type": "auth",
+      "match": "user admin|user administrator",
+      "severity": "high",
+      "description": "Admin kullanıcı giriş denemesi",
+      "action": "alert",
+      "threshold": 2,
+      "time_window": "3m"
+    },
+    {
+      "id": "SUDO_COMMAND_EXECUTION",
+      "log_type": "auth",
+      "match": "COMMAND=/usr/bin/sudo",
+      "severity": "medium",
+      "description": "Sudo komutu çalıştırıldı",
+      "action": "log_only"
+    },
+    {
+      "id": "UFW_PORT22_BLOCK",
+      "log_type": "ufw",
+      "match": "\\[UFW BLOCK\\].*DPT=22",
+      "severity": "high",
+      "description": "Port 22 (SSH) engellendi",
+      "action": "alert",
+      "threshold": 10,
+      "time_window": "1m"
+    },
+    {
+      "id": "UFW_PORT80_BLOCK",
+      "log_type": "ufw",
+      "match": "\\[UFW BLOCK\\].*DPT=80",
+      "severity": "medium",
+      "description": "Port 80 (HTTP) engellendi",
+      "action": "alert",
+      "threshold": 20,
+      "time_window": "1m"
+    },
+    {
+      "id": "UFW_PORT443_BLOCK",
+      "log_type": "ufw",
+      "match": "\\[UFW BLOCK\\].*DPT=443",
+      "severity": "medium",
+      "description": "Port 443 (HTTPS) engellendi",
+      "action": "alert",
+      "threshold": 20,
+      "time_window": "1m"
+    },
+    {
+      "id": "UFW_DATABASE_BLOCK",
+      "log_type": "ufw",
+      "match": "\\[UFW BLOCK\\].*DPT=(3306|5432|27017)",
+      "severity": "critical",
+      "description": "Database portlarına engellenen erişim",
+      "action": "block_and_alert",
+      "threshold": 5,
+      "time_window": "2m"
+    },
+    {
+      "id": "UFW_RATE_LIMIT_BLOCK",
+      "log_type": "ufw",
+      "match": "\\[UFW LIMIT BLOCK\\]",
+      "severity": "high",
+      "description": "Rate limit nedeniyle engellenen trafik",
+      "action": "alert"
+    },
+    {
+      "id": "UFW_SYN_FLOOD",
+      "log_type": "ufw",
+      "match": "\\[UFW BLOCK\\].*SYN.*DPT=(80|443)",
+      "severity": "critical",
+      "description": "SYN flood saldırısı tespiti",
+      "action": "block_and_alert",
+      "threshold": 50,
+      "time_window": "10s"
+    },
+    {
+      "id": "UFW_PORT_SCAN",
+      "log_type": "ufw",
+      "match": "\\[UFW BLOCK\\].*SPT=(4[0-9]{4}|5[0-9]{4})",
+      "severity": "high",
+      "description": "Port tarama aktivitesi",
+      "action": "alert",
+      "threshold": 10,
+      "time_window": "30s"
+    },
+    {
+      "id": "NGINX_404_NOT_FOUND",
+      "log_type": "nginx",
+      "match": " 404 ",
+      "severity": "low",
+      "description": "404 Not Found hatası",
+      "action": "log_only",
+      "threshold": 100,
+      "time_window": "1m"
+    },
+    {
+      "id": "NGINX_500_ERROR",
+      "log_type": "nginx",
+      "match": " 500 ",
+      "severity": "high",
+      "description": "500 Internal Server Error",
+      "action": "alert",
+      "threshold": 5,
+      "time_window": "5m"
+    },
+    {
+      "id": "NGINX_401_UNAUTHORIZED",
+      "log_type": "nginx",
+      "match": " 401 ",
+      "severity": "medium",
+      "description": "401 Unauthorized erişim",
+      "action": "alert",
+      "threshold": 10,
+      "time_window": "2m"
+    },
+    {
+      "id": "NGINX_403_FORBIDDEN",
+      "log_type": "nginx",
+      "match": " 403 ",
+      "severity": "medium",
+      "description": "403 Forbidden erişim",
+      "action": "alert",
+      "threshold": 10,
+      "time_window": "2m"
+    },
+    {
+      "id": "NGINX_SQL_INJECTION",
+      "log_type": "nginx",
+      "match": "(SELECT|UNION|INSERT|UPDATE|DELETE|DROP).*FROM|' OR '1'='1",
+      "severity": "critical",
+      "description": "SQL Injection denemesi",
+      "action": "block_and_alert",
+      "threshold": 1,
+      "time_window": "1m"
+    },
+    {
+      "id": "NGINX_XSS_ATTEMPT",
+      "log_type": "nginx",
+      "match": "<script>|alert\\(|document\\.cookie|onload=|onerror=",
+      "severity": "critical",
+      "description": "XSS (Cross-Site Scripting) denemesi",
+      "action": "block_and_alert",
+      "threshold": 1,
+      "time_window": "1m"
+    },
+    {
+      "id": "NGINX_PATH_TRAVERSAL",
+      "log_type": "nginx",
+      "match": "\\.\\./|\\.\\.\\\\|/etc/passwd|/etc/shadow",
+      "severity": "critical",
+      "description": "Path Traversal denemesi",
+      "action": "block_and_alert",
+      "threshold": 1,
+      "time_window": "1m"
+    },
+    {
+      "id": "NGINX_BRUTE_FORCE_LOGIN",
+      "log_type": "nginx",
+      "match": "/wp-login\\.php|/admin/login|/login.*401",
+      "severity": "high",
+      "description": "Web login brute-force denemesi",
+      "action": "alert",
+      "threshold": 10,
+      "time_window": "2m"
+    },
+    {
+      "id": "NGINX_BOT_ACCESS",
+      "log_type": "nginx",
+      "match": "Googlebot|Bingbot|YandexBot|AhrefsBot|SEMrushBot",
+      "severity": "info",
+      "description": "Search engine bot erişimi",
+      "action": "log_only"
+    },
+    {
+      "id": "NGINX_SCANNER_BOT",
+      "log_type": "nginx",
+      "match": "sqlmap|Nikto|Nuclei|dirb|gobuster|ffuf",
+      "severity": "critical",
+      "description": "Güvenlik tarayıcı bot tespiti",
+      "action": "block_and_alert",
+      "threshold": 1,
+      "time_window": "1m"
+    },
+    {
+      "id": "SYSTEM_HIGH_LOAD",
+      "log_type": "syslog",
+      "match": "load average.*[5-9][0-9]\\.[0-9]{2}",
+      "severity": "high",
+      "description": "Yüksek sistem yükü",
+      "action": "alert"
+    },
+    {
+      "id": "DISK_SPACE_CRITICAL",
+      "log_type": "syslog",
+      "match": "no space left on device|disk usage.*(9[0-9]|100)%",
+      "severity": "critical",
+      "description": "Kritik disk doluluk oranı",
+      "action": "alert"
+    },
+    {
+      "id": "MEMORY_SHORTAGE",
+      "log_type": "syslog",
+      "match": "Out of memory|Killed process|oom_killer",
+      "severity": "critical",
+      "description": "Bellek yetersizliği",
+      "action": "alert"
+    },
+    {
+      "id": "KERNEL_ERROR",
+      "log_type": "syslog",
+      "match": "kernel:.*error|Kernel panic",
+      "severity": "critical",
+      "description": "Kernel hatası",
+      "action": "alert"
+    },
+    {
+      "id": "SERVICE_FAILURE",
+      "log_type": "syslog",
+      "match": "Failed to start|service failed| exited with status",
+      "severity": "high",
+      "description": "Servis başlatma hatası",
+      "action": "alert"
+    },
+    {
+      "id": "NETWORK_INTERFACE_DOWN",
+      "log_type": "syslog",
+      "match": "eth[0-9]:.*link down|network interface down",
+      "severity": "critical",
+      "description": "Ağ arayüzü kapandı",
+      "action": "alert"
+    },
+    {
+      "id": "CRON_JOB_FAILED",
+      "log_type": "syslog",
+      "match": "CRON\\[.*\\]:.*FAILED|CRON\\[.*\\]:.*error",
+      "severity": "medium",
+      "description": "Cron job hatası",
+      "action": "alert"
+    },
+    {
+      "id": "SUCCESSFUL_CRON_EXECUTION",
+      "log_type": "syslog",
+      "match": "CRON\\[.*\\]:.*CMD",
+      "severity": "info",
+      "description": "Cron job çalıştırıldı",
+      "action": "log_only"
+    },
+    {
+      "id": "USER_ACCOUNT_MODIFICATION",
+      "log_type": "auth",
+      "match": "password changed|new user added|user deleted",
+      "severity": "high",
+      "description": "Kullanıcı hesabı değişikliği",
+      "action": "alert"
+    },
+    {
+      "id": "PRIVILEGE_ESCALATION",
+      "log_type": "auth",
+      "match": "setuid|setgid|sudo.*root",
+      "severity": "critical",
+      "description": "Ayrıcalık yükseltme girişimi",
+      "action": "alert"
+    },
+    {
+      "id": "SSH_TUNNELING",
+      "log_type": "auth",
+      "match": "tunnel forwarding|Forwarding.*port",
+      "severity": "medium",
+      "description": "SSH tünelleme aktivitesi",
+      "action": "log_only"
+    },
+    {
+      "id": "MULTIPLE_GEO_LOCATIONS",
+      "log_type": "auth",
+      "match_custom": "geo_ip_variation",
+      "severity": "high",
+      "description": "Aynı kullanıcı için farklı lokasyonlardan giriş",
+      "action": "alert",
+      "threshold": 2,
+      "time_window": "10m"
+    }
+  ],
+  "config": {
+    "default_action": "log_only",
+    "alert_email": "security@example.com",
+    "alert_webhook": "https://hooks.slack.com/services/XXX",
+    "retention_days": 90,
+    "timezone": "Europe/Istanbul",
+    "aggregation_window": "5m",
+    "severity_levels": {
+      "info": ["log_only"],
+      "low": ["log_only"],
+      "medium": ["alert"],
+      "high": ["alert", "block"],
+      "critical": ["alert", "block", "notify_admin"]
+    }
+  }
+}
