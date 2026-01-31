@@ -189,6 +189,11 @@ case tailMsg:
 					}
 					if choice == "Monitoring (Tailing)" {
 						m.currentScreen = streamScreen
+						m.AnalysisData = ""
+						m.RecentAlerts = []string{}
+						m.viewport.SetContent(lipgloss.NewStyle().
+                    Foreground(lipgloss.Color("240")).
+                    Render("\n   Connecting, waiting for new logs...")) 
 						return m, nil
 					}
 					m.currentScreen = fileListScreen

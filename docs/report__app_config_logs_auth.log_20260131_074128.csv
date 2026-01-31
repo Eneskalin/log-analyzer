@@ -1,0 +1,114 @@
+﻿Dosya Adi,Toplam Satir,Tespit Edilen Olay
+/app/config/logs/auth.log,71,110
+
+Bulgu Detaylari
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:15:42 server sshd[1024]: Failed password for root from 192.168.1.10 port 22
+[CRITICAL] SSH_ROOT_LOGIN_ATTEMPT: Jan 28 10:15:42 server sshd[1024]: Failed password for root from 192.168.1.10 port 22
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:15:42 server sshd[1024]: Failed password for root from 192.168.1.10 port 22
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:16:01 server sshd[1024]: Accepted password for enes from 192.168.1.15 port 22
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:17:33 server sshd[1024]: Failed password for invalid user admin from 10.0.0.5
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:17:33 server sshd[1024]: Failed password for invalid user admin from 10.0.0.5
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:15:42 server sshd[1024]: Failed password for root from 192.168.1.10 port 58122 ssh2
+[CRITICAL] SSH_ROOT_LOGIN_ATTEMPT: Jan 28 10:15:42 server sshd[1024]: Failed password for root from 192.168.1.10 port 58122 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:15:42 server sshd[1024]: Failed password for root from 192.168.1.10 port 58122 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:15:43 server sshd[1024]: Failed password for root from 192.168.1.10 port 58122 ssh2
+[CRITICAL] SSH_ROOT_LOGIN_ATTEMPT: Jan 28 10:15:43 server sshd[1024]: Failed password for root from 192.168.1.10 port 58122 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:15:43 server sshd[1024]: Failed password for root from 192.168.1.10 port 58122 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:15:44 server sshd[1024]: Failed password for root from 192.168.1.10 port 58122 ssh2
+[CRITICAL] SSH_ROOT_LOGIN_ATTEMPT: Jan 28 10:15:44 server sshd[1024]: Failed password for root from 192.168.1.10 port 58122 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:15:44 server sshd[1024]: Failed password for root from 192.168.1.10 port 58122 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:15:45 server sshd[1024]: Failed password for admin from 192.168.1.10 port 58122 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:15:45 server sshd[1024]: Failed password for admin from 192.168.1.10 port 58122 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:15:46 server sshd[1024]: Failed password for test from 192.168.1.10 port 58122 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:15:46 server sshd[1024]: Failed password for test from 192.168.1.10 port 58122 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:15:47 server sshd[1024]: Failed password for user from 192.168.1.10 port 58122 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:15:47 server sshd[1024]: Failed password for user from 192.168.1.10 port 58122 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:15:48 server sshd[1024]: Failed password for ubuntu from 192.168.1.10 port 58122 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:15:48 server sshd[1024]: Failed password for ubuntu from 192.168.1.10 port 58122 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:16:01 server sshd[1025]: Failed password for invalid user administrator from 10.0.0.5 port 44123 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:16:01 server sshd[1025]: Failed password for invalid user administrator from 10.0.0.5 port 44123 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:16:02 server sshd[1025]: Failed password for invalid user admin from 10.0.0.5 port 44123 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:16:02 server sshd[1025]: Failed password for invalid user admin from 10.0.0.5 port 44123 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:16:03 server sshd[1025]: Failed password for invalid user mysql from 10.0.0.5 port 44123 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:16:03 server sshd[1025]: Failed password for invalid user mysql from 10.0.0.5 port 44123 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:16:15 server sshd[1026]: Accepted password for enes from 192.168.1.15 port 55001 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:16:20 server sshd[1027]: Accepted publickey for devops from 172.16.0.25 port 52134 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:16:45 server sshd[1028]: Accepted keyboard-interactive/pam for sysadmin from 10.10.1.100 port 60123 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:17:10 server sshd[1029]: Accepted certificate for appuser from 203.0.113.45 port 33128 ssh2 (RSA SHA256:AB12CD34...)
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:19:15 server sshd[1035]: Connection closed by authenticating user root 192.168.1.10 port 58122 [preauth]
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:19:16 server sshd[1036]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.1.10
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:19:17 server sshd[1037]: error: maximum authentication attempts exceeded for root from 192.168.1.10 port 58122 ssh2 [preauth]
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:19:18 server sshd[1038]: Disconnecting: Too many authentication failures for root [preauth]
+[MEDIUM] SSH_FAIL2BAN_BLOCK: Jan 28 10:19:20 server sshd[1039]: Connection from 192.168.1.10 port 58122 refused: Banned by fail2ban
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:19:20 server sshd[1039]: Connection from 192.168.1.10 port 58122 refused: Banned by fail2ban
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:19:30 server sshd[1040]: Received disconnect from 10.0.0.5 port 44123:11: Bye Bye [preauth]
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:19:31 server sshd[1041]: Disconnected from authenticating user root 10.0.0.5 port 44123 [preauth]
+[HIGH] SSH_PUBLICKEY_FAILED: Jan 28 10:20:01 server sshd[1042]: Failed publickey for root from 203.0.113.77 port 50123 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:20:01 server sshd[1042]: Failed publickey for root from 203.0.113.77 port 50123 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:20:02 server sshd[1043]: Failed keyboard-interactive/pam for invalid user test from 192.168.1.55 port 38912 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:20:15 server sshd[1044]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.1.66
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:20:30 server sshd[1045]: Failed none for invalid user hacker from 192.168.1.77 port 42123 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:20:45 server sshd[1046]: Failed certificate for invalid user dev from 192.168.1.88 port 39123 ssh2
+[LOW] SSH_SESSION_OPENED: Jan 28 10:21:10 server sshd[1047]: pam_unix(sshd:session): session opened for user enes by (uid=0)
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:21:10 server sshd[1047]: pam_unix(sshd:session): session opened for user enes by (uid=0)
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:21:15 server sshd[1048]: Starting session: shell on pts/0 for enes from 192.168.1.15 port 55001
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:22:30 server sshd[1049]: Received disconnect from 172.16.0.25 port 52134:11: disconnected by user
+[LOW] SSH_SESSION_CLOSED: Jan 28 10:22:31 server sshd[1050]: pam_unix(sshd:session): session closed for user devops
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:22:31 server sshd[1050]: pam_unix(sshd:session): session closed for user devops
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:23:45 server sshd[1051]: Server listening on 0.0.0.0 port 22
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:23:45 server sshd[1051]: Server listening on :: port 22
+[CRITICAL] SSH_INVALID_USER: Jan 28 10:24:01 server sshd[1052]: Invalid user pi from 185.234.219.117 port 54321 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:24:01 server sshd[1052]: Invalid user pi from 185.234.219.117 port 54321 ssh2
+[CRITICAL] SSH_INVALID_USER: Jan 28 10:24:02 server sshd[1053]: Invalid user raspberry from 185.234.219.117 port 54322 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:24:02 server sshd[1053]: Invalid user raspberry from 185.234.219.117 port 54322 ssh2
+[CRITICAL] SSH_INVALID_USER: Jan 28 10:24:03 server sshd[1054]: Invalid user guest from 185.234.219.117 port 54323 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:24:03 server sshd[1054]: Invalid user guest from 185.234.219.117 port 54323 ssh2
+[CRITICAL] SSH_INVALID_USER: Jan 28 10:24:04 server sshd[1055]: Invalid user support from 185.234.219.117 port 54324 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:24:04 server sshd[1055]: Invalid user support from 185.234.219.117 port 54324 ssh2
+[CRITICAL] SSH_INVALID_USER: Jan 28 10:24:05 server sshd[1056]: Invalid user ftp from 185.234.219.117 port 54325 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:24:05 server sshd[1056]: Invalid user ftp from 185.234.219.117 port 54325 ssh2
+[CRITICAL] SSH_INVALID_USER: Jan 28 10:24:06 server sshd[1057]: Invalid user test from 185.234.219.117 port 54326 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:24:06 server sshd[1057]: Invalid user test from 185.234.219.117 port 54326 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:25:10 server sshd[1058]: Connection from 198.51.100.99 port 12345: SSH protocol version 1.5 not supported
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:25:15 server sshd[1059]: Bad packet length 808464432. [preauth]
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:25:20 server sshd[1060]: Corrupted MAC on input. [preauth]
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:25:25 server sshd[1061]: kex_exchange_identification: Connection closed by remote host
+[CRITICAL] SSH_INVALID_USER: Jan 28 10:25:30 server sshd[1062]: Invalid user enumeration attempt from 203.0.113.200 port 61123 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:25:30 server sshd[1062]: Invalid user enumeration attempt from 203.0.113.200 port 61123 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:26:01 server sshd[1063]: Failed password for root from 45.33.1.100 port 22101 ssh2
+[CRITICAL] SSH_ROOT_LOGIN_ATTEMPT: Jan 28 10:26:01 server sshd[1063]: Failed password for root from 45.33.1.100 port 22101 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:26:01 server sshd[1063]: Failed password for root from 45.33.1.100 port 22101 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:26:01 server sshd[1064]: Failed password for root from 45.33.1.101 port 22102 ssh2
+[CRITICAL] SSH_ROOT_LOGIN_ATTEMPT: Jan 28 10:26:01 server sshd[1064]: Failed password for root from 45.33.1.101 port 22102 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:26:01 server sshd[1064]: Failed password for root from 45.33.1.101 port 22102 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:26:01 server sshd[1065]: Failed password for root from 45.33.1.102 port 22103 ssh2
+[CRITICAL] SSH_ROOT_LOGIN_ATTEMPT: Jan 28 10:26:01 server sshd[1065]: Failed password for root from 45.33.1.102 port 22103 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:26:01 server sshd[1065]: Failed password for root from 45.33.1.102 port 22103 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:26:02 server sshd[1066]: Failed password for root from 45.33.1.103 port 22104 ssh2
+[CRITICAL] SSH_ROOT_LOGIN_ATTEMPT: Jan 28 10:26:02 server sshd[1066]: Failed password for root from 45.33.1.103 port 22104 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:26:02 server sshd[1066]: Failed password for root from 45.33.1.103 port 22104 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:26:02 server sshd[1067]: Failed password for root from 45.33.1.104 port 22105 ssh2
+[CRITICAL] SSH_ROOT_LOGIN_ATTEMPT: Jan 28 10:26:02 server sshd[1067]: Failed password for root from 45.33.1.104 port 22105 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:26:02 server sshd[1067]: Failed password for root from 45.33.1.104 port 22105 ssh2
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:26:02 server sshd[1068]: Failed password for admin from 45.33.1.105 port 22106 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:26:02 server sshd[1068]: Failed password for admin from 45.33.1.105 port 22106 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:27:10 server sshd[1069]: Restarting OpenSSH Server daemon
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:27:11 server sshd[1070]: reconfiguring
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:27:12 server sshd[1070]: Failed to start OpenSSH server daemon
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:27:13 server sshd[1071]: Server listening on 0.0.0.0 port 2222
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:27:14 server sshd[1071]: Server listening on :: port 2222
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:01 server sshd[1072]: Accepted password for backup from 10.10.10.50 port 33128 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] SSH_FAILED_PASSWORD: Jan 28 10:26:02 server sshd[1068]: Failed password for admin from 45.33.1.105 port 22106 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:26:02 server sshd[1068]: Failed password for admin from 45.33.1.105 port 22106 ssh2
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+[HIGH] MULTIPLE_GEO_LOCATIONS: 
