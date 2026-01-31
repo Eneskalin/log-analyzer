@@ -48,11 +48,15 @@ You can map logical names to physical file paths. The application will resolve t
 
  Clone the repository:
    ```bash
-   git clone [https://github.com/eneskalin/log-analyzer.git](https://github.com/eneskalin/log-analyzer.git)
+   git clone https://github.com/eneskalin/log-analyzer.git
    ```
    Build Project
    ```bash
    cd log-analyzer
    docker-compose up --build
-   docker-compose run log-analyzer
+   
   ```
+  Open new Terminal
+  ```bash
+  docker-compose run log-analyzer
+```
