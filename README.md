@@ -60,3 +60,17 @@ You can map logical names to physical file paths. The application will resolve t
   ```bash
   docker-compose run log-analyzer
 ```
+
+
+## Screen Shots
+
+
+![Uygulama Ekran Görüntüsü](https://i.imgur.com/wRZP9lX.gif)
+
+![Uygulama Ekran Görüntüsü](https://i.imgur.com/8gEN0jJ.gif)
+
+![Uygulama Ekran Görüntüsü](https://i.imgur.com/7uDua0m.png)
+
+![Uygulama Ekran Görüntüsü](https://i.imgur.com/PdnxTqv.gif)
+
+
