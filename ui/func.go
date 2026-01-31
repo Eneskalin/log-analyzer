@@ -145,28 +145,24 @@ func WaitForLog(sub chan tailMsg) tea.Cmd {
 }
 
 func StartLogWorker(sub chan tailMsg) {
-	// OPTİMİZASYON: Fileoffsets ve config'i worker'da tut
 	fileOffsets := make(map[string]int64)
 
-	// Config'i yükle
 	pathConfig, err := helpers.ReadPaths()
 	if err != nil {
 		sub <- tailMsg("Error loading paths: " + err.Error())
 		return
 	}
 
-	// Başlangıç offsetlerini al
 	for _, logPath := range pathConfig.Logs {
 		if info, err := os.Stat(logPath); err == nil {
 			fileOffsets[logPath] = info.Size()
 		}
 	}
 
-	// OPTİMİZASYON: İlk okumada fazla CPU kullanımını önle
-	ticker := time.NewTicker(500 * time.Millisecond) // 500ms daha responsive
+	ticker := time.NewTicker(500 * time.Millisecond) 
 	defer ticker.Stop()
 
-	const bufferSize = 65536 // 64KB buffer - daha az syscall
+	const bufferSize = 65536 
 
 	for range ticker.C {
 		newAlerts := make([]string, 0, 10)
@@ -180,18 +176,15 @@ func StartLogWorker(sub chan tailMsg) {
 			currSize := info.Size()
 			lastSize, exists := fileOffsets[path]
 
-			// Değişiklik yoksa geç
 			if exists && currSize == lastSize {
 				continue
 			}
 
-			// Dosya küçüldüyse (Rotate) offset sıfırla
 			var seekOffset int64 = 0
 			if exists && currSize >= lastSize {
 				seekOffset = lastSize
 			}
 
-			// Dosyayı aç ve oku (64KB buffer)
 			file, err := os.Open(path)
 			if err != nil {
 				continue
@@ -207,7 +200,6 @@ func StartLogWorker(sub chan tailMsg) {
 			n, err := file.Read(buf)
 			file.Close()
 
-			// Offseti hemen güncelle
 			fileOffsets[path] = currSize
 
 			if n == 0 {
@@ -221,7 +213,6 @@ func StartLogWorker(sub chan tailMsg) {
 				continue
 			}
 
-			// OPTİMİZASYON: Manuel satır parsing (Split yerine)
 			lineCount := 0
 			start := 0
 			timeStr := time.Now().Format("15:04:05")
@@ -249,12 +240,10 @@ func StartLogWorker(sub chan tailMsg) {
 			}
 		}
 
-		// Eğer yeni log varsa kanala gönder
 		if len(newAlerts) > 0 {
 			select {
 			case sub <- tailMsg(strings.Join(newAlerts, "\n\n")):
 			default:
-				// Kanal dolu ise, mesajı atla (back pressure)
 			}
 		}
 	}
@@ -289,7 +278,7 @@ func (m Model) exportCSVCmd() tea.Cmd {
 			return err
 		}
 
-		result := fmt.Sprintf("# ✅ Rapor Hazırlandı\n\nAnaliz başarıyla tamamlandı ve CSV dosyası oluşturuldu.\n\n**Dosya Adı:** `%s`", fileName)
+		result := fmt.Sprintf("# The report has been prepared.\n\nThe analysis was successfully completed and a CSV file was created.\n\n**File Path:** `%s`", fileName)
 		return analysisResultMsg(renderWithGlamour(result, m.viewport.Width))
 	}
 }
