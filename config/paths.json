@@ -1,8 +1,7 @@
 {
   "logs": {
-    "auth": "../logs/auth.log",
-    "nginx": "../logs/nginx/access.log",
-    "ufw":"../logs/ufw.log",
-    "syslog":"../logs/syslog"
+    "auth": "logs/auth.log",
+    "nginx": "logs/nginx/access.log",
+    "ufw": "logs/ufw.log"
   }
 }

@@ -28,6 +28,15 @@ const (
 const listHeight = 14
 
 var (
+	spinners = []spinner.Spinner{
+		spinner.Line,
+		spinner.Dot,
+		spinner.MiniDot,
+		spinner.Jump,
+		spinner.Pulse,
+		spinner.Points,
+	}
+	spinnerStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("69"))
 	titleStyle        = lipgloss.NewStyle().MarginLeft(2).Foreground(lipgloss.Color("170")).Bold(true)
 	itemStyle         = lipgloss.NewStyle().PaddingLeft(4)
 	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
@@ -68,6 +77,8 @@ type Model struct {
 	SelectedFile  string
 	AnalysisData  string
 	spinner       spinner.Model
+	isLoading     bool
+	loadingMsg    string
 	Quitting      bool
 	fileOffsets   map[string]int64
 	RecentAlerts  []string
@@ -83,12 +94,18 @@ func renderWithGlamour(content string, width int) string {
 }
 
 func (m *Model) Init() tea.Cmd {
-	return nil
+
+	return m.spinner.Tick
 }
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+case spinner.TickMsg:
+    var cmd tea.Cmd
+    m.spinner, cmd = m.spinner.Update(msg)
+    return m, cmd 
 	case analysisResultMsg:
+		m.isLoading = false
 		m.AnalysisData = string(msg)
 		m.viewport.SetContent(m.AnalysisData)
 		return m, nil
@@ -104,15 +121,15 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			var sb strings.Builder
-			sb.WriteString(fmt.Sprintf("# 🚀 CANLI SİSTEM TAKİP\n\n**Son Güncelleme:** %s\n\n", time.Now().Format("15:04:05")))
+			sb.WriteString(fmt.Sprintf("# 🚀 LIVE SYSTEM MONITORING \n\n**Last Update:** %s\n\n", time.Now().Format("15:04:05")))
 
-			sb.WriteString("## 🚨 ALERT'LER\n\n")
+			sb.WriteString("## 🚨 ALERT'S\n\n")
 			if len(m.RecentAlerts) > 0 {
 				for i := len(m.RecentAlerts) - 1; i >= 0; i-- {
 					sb.WriteString(m.RecentAlerts[i] + "\n\n")
 				}
 			} else {
-				sb.WriteString("> 🟢 **Normal Durum** - Yeni hareketlilik bekleniyor...\n")
+				sb.WriteString("> **Normal Situation** - New activity is expected.\n")
 			}
 
 			m.AnalysisData = renderWithGlamour(sb.String(), m.viewport.Width)
@@ -123,7 +140,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case error:
-		m.AnalysisData = "Hata oluştu: " + msg.Error()
+		m.isLoading = false
+		m.AnalysisData = "Error: " + msg.Error()
 		m.viewport.SetContent(m.AnalysisData)
 		return m, nil
 
@@ -160,11 +178,11 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					choice := string(i)
 					m.Choice = choice
-					if choice == "Çıkış" {
+					if choice == "Exit" {
 						m.Quitting = true
 						return m, tea.Quit
 					}
-					if choice == "Gerçek Zamanlı İzleme (Tailing)" {
+					if choice == "Monitoring (Tailing)" {
 						m.currentScreen = streamScreen
 						return m, m.streamCmd()
 					}
@@ -175,12 +193,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else if m.currentScreen == fileListScreen {
 				i, ok := m.fileList.SelectedItem().(item)
 				if ok {
+					m.isLoading = true
 					m.SelectedFile = string(i)
-					if m.Choice == "CSV Raporu Oluştur" {
-						return m, m.exportCSVCmd()
-					}
 					m.currentScreen = analysisScreen
-					return m, m.runAnalysisCmd()
+					randomIndex := time.Now().UnixNano() % int64(len(spinners))
+            		m.resetSpinner(spinners[randomIndex])
+					if m.Choice == "Save CSV" {
+						m.loadingMsg = "CSV dosyası hazırlanıyor..."
+						return m, tea.Batch(m.exportCSVCmd(), m.spinner.Tick)
+					}
+					m.loadingMsg = "Analiz hazırlanıyor..."
+					return m, tea.Batch(m.runAnalysisCmd(), m.spinner.Tick)
 				}
 			}
 		}
@@ -200,14 +223,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m *Model) View() string {
 	if m.Quitting {
-		return quitTextStyle.Render("Uygulamadan çıkılıyor...")
+		return quitTextStyle.Render("Exiting the application...")
+	}
+	if m.isLoading {
+		return fmt.Sprintf("\n\n   %s %s\n\n", m.spinner.View(), m.loadingMsg)
 	}
 
 	switch m.currentScreen {
 	case mainMenuScreen:
 		return "\n" + m.mainMenu.View()
 	case fileListScreen:
-		return "\n" + m.fileList.View() + "\n\n   ESC: Geri Dön"
+		return "\n" + m.fileList.View() + "\n\n   ESC: Back"
 	case analysisScreen, streamScreen:
 		return m.headerView() + "\n" + m.viewport.View() + "\n" + m.footerView()
 	}
@@ -215,27 +241,37 @@ func (m *Model) View() string {
 }
 
 func InitialModel() *Model {
+	s := spinner.New()
+	s.Spinner = spinner.Pulse
 	items := []list.Item{
-		item("Dosya Bazlı Analiz Özetleri"),
-		item("Gerçek Zamanlı İzleme (Tailing)"),
-		item("CSV Raporu Oluştur"),
-		item("Çıkış"),
+		item("Log Summary"),
+		item("Monitoring (Tailing)"),
+		item("Save CSV"),
+		item("Exit"),
 	}
 	l := list.New(items, itemDelegate{}, 30, listHeight)
-	l.Title = "Log Analyzer - Ana Menü"
+	l.Title = "-- Log Analyzer --"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 	l.Styles.Title = titleStyle
 
 	emptyFileList := list.New([]list.Item{}, itemDelegate{}, 30, listHeight)
-	emptyFileList.Title = "Dosya Seçin"
+	emptyFileList.Title = "Select File"
 	emptyFileList.SetShowStatusBar(false)
 	emptyFileList.SetFilteringEnabled(false)
 
 	return &Model{
+		spinner:       s,
+		isLoading:     false,
 		currentScreen: mainMenuScreen,
 		mainMenu:      l,
 		fileList:      emptyFileList,
 		fileOffsets:   make(map[string]int64),
 	}
+}
+
+func (m *Model) resetSpinner(s spinner.Spinner) {
+    m.spinner = spinner.New()
+    m.spinner.Style = spinnerStyle 
+    m.spinner.Spinner = s
 }

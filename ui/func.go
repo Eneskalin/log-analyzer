@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"bufio"
 	"fmt"
 	"log-analyzer/helpers"
 	"os"
@@ -82,22 +81,22 @@ func createFileList(files []string) list.Model {
 
 func (m Model) runAnalysisCmd() tea.Cmd {
 	return func() tea.Msg {
-		pathConfig, _ := helpers.ReadPaths()            //
-		selectedPath := pathConfig.Logs[m.SelectedFile] //
+		pathConfig, _ := helpers.ReadPaths()
+		selectedPath := pathConfig.Logs[m.SelectedFile]
 
-		summary, err := helpers.GetSummary(selectedPath) //
+		summary, err := helpers.GetSummary(selectedPath)
 		if err != nil {
 			return err
 		}
 
 		var sb strings.Builder
-		sb.WriteString(fmt.Sprintf("# Analiz Özeti: %s\n\n", summary.FileName))
-		sb.WriteString(fmt.Sprintf("* **Toplam Satır:** %d\n", summary.TotalLines))
-		sb.WriteString(fmt.Sprintf("* **Toplam Tespit:** %d\n\n", summary.MatchedEvents))
+		sb.WriteString(fmt.Sprintf("# Analysis Summary: %s\n\n", summary.FileName))
+		sb.WriteString(fmt.Sprintf("* **Total Lines:** %d\n", summary.TotalLines))
+		sb.WriteString(fmt.Sprintf("* **Total Detection:** %d\n\n", summary.MatchedEvents))
 
-		sb.WriteString("### Ciddiyet Dağılımı\n")
+		sb.WriteString("### Severity Stats\n")
 		if len(summary.SeverityStats) == 0 {
-			sb.WriteString("* Tespit edilen olay yok.\n")
+			sb.WriteString("* No incident detected.\n")
 		} else {
 			for sev, count := range summary.SeverityStats {
 				sb.WriteString(fmt.Sprintf("* **%s**: %d\n", strings.ToUpper(sev), count))
@@ -105,12 +104,12 @@ func (m Model) runAnalysisCmd() tea.Cmd {
 		}
 		sb.WriteString("\n")
 
-		sb.WriteString("### Detaylar\n")
+		sb.WriteString("### Details\n")
 		for _, detail := range summary.Details {
 			sb.WriteString("- " + detail + "\n")
 		}
 
-		return analysisResultMsg(renderWithGlamour(sb.String(), m.viewport.Width)) //
+		return analysisResultMsg(renderWithGlamour(sb.String(), m.viewport.Width))
 	}
 }
 
@@ -222,59 +221,78 @@ func (m *Model) getNewLogContent() string {
 }
 
 func (m *Model) streamCmd() tea.Cmd {
-	return tea.Tick(time.Millisecond*300, func(t time.Time) tea.Msg {
-		pathConfig, _ := helpers.ReadPaths()
-		var newAlerts []string
+	pathConfig, err := helpers.ReadPaths()
+	if err != nil {
+		return func() tea.Msg { return err }
+	}
+
+	// Optimize: Initialize file offsets once
+	if len(m.fileOffsets) == 0 {
+		m.initializeFileOffsets()
+	}
+
+	return tea.Tick(time.Millisecond*500, func(t time.Time) tea.Msg {
+		newAlerts := make([]string, 0, 10)
 
 		for name, path := range pathConfig.Logs {
+			// Optimize: Use os.Stat instead of opening file first
 			info, err := os.Stat(path)
 			if err != nil {
 				continue
 			}
 
-			// İlk çalıştırmada offset ayarla
-			if _, exists := m.fileOffsets[path]; !exists {
-				m.fileOffsets[path] = info.Size()
+			currSize := info.Size()
+			lastSize, exists := m.fileOffsets[path]
+
+			// Skip if file hasn't changed
+			if !exists || currSize <= lastSize {
+				if !exists {
+					m.fileOffsets[path] = currSize
+				}
 				continue
 			}
 
-			// Dosya boyutu artmışsa yeni log satırları var
-			if info.Size() > m.fileOffsets[path] {
-				file, err := os.Open(path)
-				if err != nil {
-					continue
-				}
+			// Optimize: Only open file when we know there's new content
+			content, err := os.ReadFile(path)
+			if err != nil {
+				continue
+			}
 
-				file.Seek(m.fileOffsets[path], 0)
-				scanner := bufio.NewScanner(file)
+			// Read only new content
+			newContent := content[lastSize:]
+			if len(newContent) == 0 {
+				continue
+			}
 
-				for scanner.Scan() {
-					line := scanner.Text()
-					if strings.TrimSpace(line) != "" {
-						// Alert formatı - detaylı bilgi ile
-						alert := fmt.Sprintf("**[%s]** 🚨 `%s`\n> %s",
-							t.Format("15:04:05"),
-							strings.ToUpper(name),
-							line)
-						newAlerts = append(newAlerts, alert)
-					}
+			// Update offset
+			m.fileOffsets[path] = currSize
+
+			// Process lines
+			lines := strings.Split(strings.TrimSpace(string(newContent)), "\n")
+			lineCount := 0
+
+			for _, line := range lines {
+				trimmed := strings.TrimSpace(line)
+				if trimmed != "" && lineCount < 5 { // Limit alerts per file per tick
+					alert := fmt.Sprintf("**[%s]** 🚨 `%s`\n> %s",
+						t.Format("15:04:05"),
+						strings.ToUpper(name),
+						trimmed)
+					newAlerts = append(newAlerts, alert)
+					lineCount++
 				}
-				file.Close()
-				m.fileOffsets[path] = info.Size()
 			}
 		}
 
 		if len(newAlerts) > 0 {
 			return tailMsg(strings.Join(newAlerts, "\n\n"))
 		}
-
-		// Hiçbir alert olmasa bile ekranı güncelle (son logları göstermek için)
 		return tailMsg("")
 	})
 }
 
 func (m *Model) headerView() string {
-	title := titleStyle.Render("Log Analiz: " + m.SelectedFile)
+	title := titleStyle.Render("Log Summary: " + m.SelectedFile)
 	line := strings.Repeat("─", max(0, m.viewport.Width-lipgloss.Width(title)))
 	return lipgloss.JoinHorizontal(lipgloss.Center, title, line)
 }

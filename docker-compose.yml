@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  log-analyzer:
+    build: .
+    image: log-analyzer:latest
+    container_name: log-analyzer-app
+    stdin_open: true
+    tty: true        
+    volumes:
+      - ./logs:/app/config/logs
+      - ./docs:/app/docs
+    restart: always

@@ -12,7 +12,7 @@ func main() {
 	program := tea.NewProgram(mainModel)
 	_, err := program.Run()
 	if err != nil {
-		fmt.Printf("Hata: %v\n", err)
+		fmt.Printf("Error: %v\n", err)
 		return
 	}
 
