@@ -1,5 +1,8 @@
 # Log Analyzer
 
+[![Turkce](https://cdn-icons-png.flaticon.com/32/13980/13980321.png)](https://github.com/Eneskalin/log-analyzer/blob/main/READMETtr.md)
+Turkish
+
 A high-performance, real-time log analysis and monitoring tool developed in Go, utilizing the Bubble Tea (TUI) framework. This application is designed to parse complex log files, identify security threats, and provide live system monitoring.
 ## Technical Stack
 
