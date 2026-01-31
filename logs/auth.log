@@ -60,3 +60,8 @@ Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed beca
 Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
 Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
 Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist
+Jan 28 10:28:05 server sshd[1073]: User backup from 10.10.10.50 not allowed because shell /usr/sbin/nologin does not exist

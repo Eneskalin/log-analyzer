@@ -5,7 +5,8 @@ import (
 	"io"
 	"strings"
 	"time"
-
+	"log-analyzer/models"
+	"log-analyzer/helpers"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -80,8 +81,9 @@ type Model struct {
 	isLoading     bool
 	loadingMsg    string
 	Quitting      bool
-	fileOffsets   map[string]int64
-	RecentAlerts  []string
+	RecentAlerts  []string	
+	sub           chan tailMsg 
+	PathConfig    models.PathConfig 
 }
 
 func renderWithGlamour(content string, width int) string {
@@ -94,8 +96,18 @@ func renderWithGlamour(content string, width int) string {
 }
 
 func (m *Model) Init() tea.Cmd {
+	m.sub = make(chan tailMsg)
 
-	return m.spinner.Tick
+	if config, err := helpers.ReadPaths(); err == nil {
+		m.PathConfig = config
+	}
+
+	go StartLogWorker(m.sub)
+
+	return tea.Batch(
+		m.spinner.Tick,
+		WaitForLog(m.sub), 
+	)
 }
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -110,35 +122,28 @@ case spinner.TickMsg:
 		m.viewport.SetContent(m.AnalysisData)
 		return m, nil
 
-	case tailMsg:
+case tailMsg:
 		if m.currentScreen == streamScreen {
 			newContent := string(msg)
 			if newContent != "" {
 				m.RecentAlerts = append(m.RecentAlerts, newContent)
-				if len(m.RecentAlerts) > 20 {
+				if len(m.RecentAlerts) > 50 {
 					m.RecentAlerts = m.RecentAlerts[1:]
 				}
-			}
+				var sb strings.Builder
+				header := fmt.Sprintf("\n 🚀 LIVE SYSTEM MONITORING - Last Update: %s\n", time.Now().Format("15:04:05"))
+				sb.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color("86")).Bold(true).Render(header))
+				sb.WriteString(strings.Repeat("─", m.viewport.Width) + "\n\n")
 
-			var sb strings.Builder
-			sb.WriteString(fmt.Sprintf("# 🚀 LIVE SYSTEM MONITORING \n\n**Last Update:** %s\n\n", time.Now().Format("15:04:05")))
-
-			sb.WriteString("## 🚨 ALERT'S\n\n")
-			if len(m.RecentAlerts) > 0 {
 				for i := len(m.RecentAlerts) - 1; i >= 0; i-- {
 					sb.WriteString(m.RecentAlerts[i] + "\n\n")
 				}
-			} else {
-				sb.WriteString("> **Normal Situation** - New activity is expected.\n")
+				
+				m.AnalysisData = sb.String()
+				m.viewport.SetContent(m.AnalysisData)
 			}
-
-			m.AnalysisData = renderWithGlamour(sb.String(), m.viewport.Width)
-			m.viewport.SetContent(m.AnalysisData)
-
-			return m, m.streamCmd()
 		}
-		return m, nil
-
+		return m, WaitForLog(m.sub)
 	case error:
 		m.isLoading = false
 		m.AnalysisData = "Error: " + msg.Error()
@@ -184,7 +189,7 @@ case spinner.TickMsg:
 					}
 					if choice == "Monitoring (Tailing)" {
 						m.currentScreen = streamScreen
-						return m, m.streamCmd()
+						return m, nil
 					}
 					m.currentScreen = fileListScreen
 					m.LoadLogFiles()
@@ -199,10 +204,10 @@ case spinner.TickMsg:
 					randomIndex := time.Now().UnixNano() % int64(len(spinners))
             		m.resetSpinner(spinners[randomIndex])
 					if m.Choice == "Save CSV" {
-						m.loadingMsg = "CSV dosyası hazırlanıyor..."
+						m.loadingMsg = "CSV file in progress..."
 						return m, tea.Batch(m.exportCSVCmd(), m.spinner.Tick)
 					}
-					m.loadingMsg = "Analiz hazırlanıyor..."
+					m.loadingMsg = "Summary is in progress..."
 					return m, tea.Batch(m.runAnalysisCmd(), m.spinner.Tick)
 				}
 			}
@@ -266,7 +271,6 @@ func InitialModel() *Model {
 		currentScreen: mainMenuScreen,
 		mainMenu:      l,
 		fileList:      emptyFileList,
-		fileOffsets:   make(map[string]int64),
 	}
 }
 

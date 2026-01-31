@@ -10,4 +10,5 @@ services:
     volumes:
       - ./logs:/app/config/logs
       - ./docs:/app/docs
+    
     restart: always

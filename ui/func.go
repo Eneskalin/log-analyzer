@@ -16,15 +16,13 @@ func (m Model) tailAllLogsCmd() tea.Cmd {
 	return tea.Tick(time.Millisecond*800, func(t time.Time) tea.Msg {
 		pathConfig, _ := helpers.ReadPaths()
 
-		// Rastgele bir log dosyası seçimi (Simülasyon için)
 		keys := make([]string, 0, len(pathConfig.Logs))
 		for k := range pathConfig.Logs {
 			keys = append(keys, k)
 		}
 		randomSource := keys[t.UnixNano()%int64(len(keys))]
 
-		// Alert mesajı formatı
-		alertMsg := fmt.Sprintf("\n> [!CAUTION]\n> ### 🚨 NEW ALERT FROM %s\n> **Time:** %s\n",
+		alertMsg := fmt.Sprintf("\n> [!CAUTION]\n> ###  NEW ALERT FROM %s\n> **Time:** %s\n",
 			strings.ToUpper(randomSource),
 			t.Format("15:04:05"))
 
@@ -42,7 +40,7 @@ func (m *Model) LoadLogFiles() error {
 		items = append(items, item(name))
 	}
 	m.fileList = list.New(items, itemDelegate{}, 30, listHeight)
-	m.fileList.Title = "Dosya Seçin"
+	m.fileList.Title = "Select File"
 	m.fileList.SetShowStatusBar(false)
 	m.fileList.SetFilteringEnabled(false)
 	return nil
@@ -71,7 +69,7 @@ func createFileList(files []string) list.Model {
 
 	const defaultWidth = 30
 	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
-	l.Title = "Log Dosyaları"
+	l.Title = "Log Files"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 	l.Styles.Title = titleStyle
@@ -121,7 +119,6 @@ func (m Model) tailLogCmd() tea.Cmd {
 		}
 		selectedPath := pathConfig.Logs[m.SelectedFile]
 
-		// Read the log file and start tailing
 		content, err := os.ReadFile(selectedPath)
 		if err != nil {
 			return err
@@ -137,159 +134,133 @@ func (m Model) liveAnalysis() tea.Cmd {
 	}
 }
 
-func (m *Model) initializeFileOffsets() error {
+
+
+
+
+func WaitForLog(sub chan tailMsg) tea.Cmd {
+	return func() tea.Msg {
+		return <-sub
+	}
+}
+
+func StartLogWorker(sub chan tailMsg) {
+	// OPTİMİZASYON: Fileoffsets ve config'i worker'da tut
+	fileOffsets := make(map[string]int64)
+
+	// Config'i yükle
 	pathConfig, err := helpers.ReadPaths()
 	if err != nil {
-		return err
+		sub <- tailMsg("Error loading paths: " + err.Error())
+		return
 	}
 
+	// Başlangıç offsetlerini al
 	for _, logPath := range pathConfig.Logs {
-		fileInfo, err := os.Stat(logPath)
-		if err == nil {
-			m.fileOffsets[logPath] = fileInfo.Size()
-		}
-	}
-	return nil
-}
-
-func (m *Model) getNewLogContent() string {
-	pathConfig, err := helpers.ReadPaths()
-	if err != nil {
-		return ""
-	}
-
-	var allContent strings.Builder
-	allContent.WriteString("# 🚀 Canlı Sistem İzleme (Stream Mode)\n\n")
-	allContent.WriteString(fmt.Sprintf("> **Son Güncelleme:** %s\n\n", time.Now().Format("15:04:05")))
-	allContent.WriteString("---\n\n")
-
-	hasNewContent := false
-
-	for logName, logPath := range pathConfig.Logs {
-		// Dosya bilgisini al
-		fileInfo, err := os.Stat(logPath)
-		if err != nil {
-			continue
-		}
-
-		currentSize := fileInfo.Size()
-		lastOffset := m.fileOffsets[logPath]
-
-		// Eğer dosya büyüklüğü artmışsa yeni content var
-		if currentSize > lastOffset {
-			hasNewContent = true
-
-			// Dosyayı oku
-			content, err := os.ReadFile(logPath)
-			if err != nil {
-				continue
-			}
-
-			// Yeni kısımdan itibaren oku
-			var newContent string
-			if lastOffset > 0 {
-				newContent = string(content[lastOffset:])
-			} else {
-				newContent = string(content)
-			}
-
-			// Offsenti güncelle
-			m.fileOffsets[logPath] = currentSize
-
-			// ALERT Başlığı - Yeni giriş göstergesi
-			allContent.WriteString(fmt.Sprintf("## ⚠️ NEW ENTRY FROM %s\n", strings.ToUpper(logName)))
-
-			// Satırları ayıkla
-			lines := strings.Split(strings.TrimSpace(newContent), "\n")
-
-			allContent.WriteString("```log\n")
-			for _, line := range lines {
-				if line != "" {
-					allContent.WriteString(line + "\n")
-				}
-			}
-			allContent.WriteString("```\n\n")
+		if info, err := os.Stat(logPath); err == nil {
+			fileOffsets[logPath] = info.Size()
 		}
 	}
 
-	if !hasNewContent {
-		// Yeni content yoksa durum mesajı göster
-		allContent.WriteString("> ⏳ Yeni log girişi bekleniyor...\n")
-	}
+	// OPTİMİZASYON: İlk okumada fazla CPU kullanımını önle
+	ticker := time.NewTicker(500 * time.Millisecond) // 500ms daha responsive
+	defer ticker.Stop()
 
-	return allContent.String()
-}
+	const bufferSize = 65536 // 64KB buffer - daha az syscall
 
-func (m *Model) streamCmd() tea.Cmd {
-	pathConfig, err := helpers.ReadPaths()
-	if err != nil {
-		return func() tea.Msg { return err }
-	}
-
-	// Optimize: Initialize file offsets once
-	if len(m.fileOffsets) == 0 {
-		m.initializeFileOffsets()
-	}
-
-	return tea.Tick(time.Millisecond*500, func(t time.Time) tea.Msg {
+	for range ticker.C {
 		newAlerts := make([]string, 0, 10)
 
 		for name, path := range pathConfig.Logs {
-			// Optimize: Use os.Stat instead of opening file first
 			info, err := os.Stat(path)
 			if err != nil {
 				continue
 			}
 
 			currSize := info.Size()
-			lastSize, exists := m.fileOffsets[path]
+			lastSize, exists := fileOffsets[path]
 
-			// Skip if file hasn't changed
-			if !exists || currSize <= lastSize {
-				if !exists {
-					m.fileOffsets[path] = currSize
-				}
+			// Değişiklik yoksa geç
+			if exists && currSize == lastSize {
 				continue
 			}
 
-			// Optimize: Only open file when we know there's new content
-			content, err := os.ReadFile(path)
+			// Dosya küçüldüyse (Rotate) offset sıfırla
+			var seekOffset int64 = 0
+			if exists && currSize >= lastSize {
+				seekOffset = lastSize
+			}
+
+			// Dosyayı aç ve oku (64KB buffer)
+			file, err := os.Open(path)
 			if err != nil {
 				continue
 			}
 
-			// Read only new content
-			newContent := content[lastSize:]
-			if len(newContent) == 0 {
+			_, err = file.Seek(seekOffset, 0)
+			if err != nil {
+				file.Close()
 				continue
 			}
 
-			// Update offset
-			m.fileOffsets[path] = currSize
+			buf := make([]byte, bufferSize)
+			n, err := file.Read(buf)
+			file.Close()
 
-			// Process lines
-			lines := strings.Split(strings.TrimSpace(string(newContent)), "\n")
+			// Offseti hemen güncelle
+			fileOffsets[path] = currSize
+
+			if n == 0 {
+				continue
+			}
+
+			newContent := string(buf[:n])
+			trimmedContent := strings.TrimSpace(newContent)
+
+			if trimmedContent == "" {
+				continue
+			}
+
+			// OPTİMİZASYON: Manuel satır parsing (Split yerine)
 			lineCount := 0
+			start := 0
+			timeStr := time.Now().Format("15:04:05")
+			nameLower := strings.ToUpper(name)
 
-			for _, line := range lines {
-				trimmed := strings.TrimSpace(line)
-				if trimmed != "" && lineCount < 5 { // Limit alerts per file per tick
+			for i := 0; i < len(trimmedContent) && lineCount < 5; i++ {
+				if trimmedContent[i] == '\n' {
+					line := strings.TrimSpace(trimmedContent[start:i])
+					if line != "" {
+						alert := fmt.Sprintf("**[%s]** 🚨 `%s`\n> %s",
+							timeStr, nameLower, line)
+						newAlerts = append(newAlerts, alert)
+						lineCount++
+					}
+					start = i + 1
+				}
+			}
+			if start < len(trimmedContent) && lineCount < 5 {
+				line := strings.TrimSpace(trimmedContent[start:])
+				if line != "" {
 					alert := fmt.Sprintf("**[%s]** 🚨 `%s`\n> %s",
-						t.Format("15:04:05"),
-						strings.ToUpper(name),
-						trimmed)
+						timeStr, nameLower, line)
 					newAlerts = append(newAlerts, alert)
-					lineCount++
 				}
 			}
 		}
 
+		// Eğer yeni log varsa kanala gönder
 		if len(newAlerts) > 0 {
-			return tailMsg(strings.Join(newAlerts, "\n\n"))
+			select {
+			case sub <- tailMsg(strings.Join(newAlerts, "\n\n")):
+			default:
+				// Kanal dolu ise, mesajı atla (back pressure)
+			}
 		}
-		return tailMsg("")
-	})
+	}
 }
+
+
 
 func (m *Model) headerView() string {
 	title := titleStyle.Render("Log Summary: " + m.SelectedFile)
